@@ -256,10 +256,10 @@ const server = http.createServer((req, res) => {
     if (req.method === "GET" && req.url.startsWith("/albums")) {
       const urlSplit = req.url.split("/");
       const lastSplitted = urlSplit[3];
-      console.log(lastSplitted);
+
       if (urlSplit.length === 4 && lastSplitted === "songs") {
         const albumId = urlSplit[2];
-        console.log(albumId);
+
         const albumSongs = songs.filter(
           (song) => song.albumId === Number(albumId)
         );
@@ -267,6 +267,24 @@ const server = http.createServer((req, res) => {
         res.setHeader("Content-Type", "application/json");
         res.statusCode = 200;
         res.write(JSON.stringify(albumSongs));
+        return res.end();
+      }
+    }
+    //13 Get all songs of a specified trackNumber
+
+    if (req.method === "GET" && req.url.startsWith("/tracknumbers")) {
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[3];
+
+      if (urlSplit.length === 4 && lastSplitted === "songs") {
+        const trackNumber = urlSplit[2];
+        const trackNumberSongs = songs.filter(
+          (song) => song.trackNumber === Number(trackNumber)
+        );
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(trackNumberSongs));
         return res.end();
       }
     }
