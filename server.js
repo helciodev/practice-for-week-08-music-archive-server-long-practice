@@ -101,8 +101,8 @@ const server = http.createServer((req, res) => {
     }
     //4 Edit a specified artist by artistId
     if (
-      req.method === "PATCH" ||
-      (req.method === "PUT" && req.url.startsWith("/artists"))
+      (req.method === "PATCH" || req.method === "PUT") &&
+      req.url.startsWith("/artists")
     ) {
       const urlSplit = req.url.split("/");
       const artistId = urlSplit[2];
@@ -193,8 +193,8 @@ const server = http.createServer((req, res) => {
 
     //9 Edit a specified album by albumId
     if (
-      req.method === "PATCH" ||
-      (req.method === "PUT" && req.url.startsWith("/albums"))
+      (req.method === "PATCH" || req.method === "PUT") &&
+      req.url.startsWith("/albums")
     ) {
       const urlSplit = req.url.split("/");
       if (urlSplit.length === 3) {
@@ -325,6 +325,29 @@ const server = http.createServer((req, res) => {
         res.write(JSON.stringify(newSong));
         return res.end();
       }
+    }
+
+    // 16 Edit a specified song by songId
+
+    if (
+      (req.method === "PATCH" || req.method === "PUT") &&
+      req.url.startsWith("/songs")
+    ) {
+      console.log(" Iam here");
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[2];
+
+      const songId = urlSplit[2];
+      const { name, trackNumber, lyrics } = req.body;
+      const songRes = songs.find((el) => el.songId === Number(songId));
+      songRes.name = name;
+      songRes.trackNumber = trackNumber;
+      songRes.lyrics = lyrics;
+
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = 200;
+      res.write(JSON.stringify(songRes));
+      return res.end();
     }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
