@@ -349,6 +349,22 @@ const server = http.createServer((req, res) => {
       res.write(JSON.stringify(songRes));
       return res.end();
     }
+
+    // 17 Delete a specified song by songId
+    if (req.method === "DELETE" && req.url.startsWith("/songs")) {
+      const urlSplit = req.url.split("/");
+      const songId = urlSplit[2];
+
+      const songIndex = songs.indexOf((song) => song.songId === Number(songId));
+
+      songs.splice(songIndex, 0);
+      const message = { message: "Deleted successfully" };
+
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = 200;
+      res.write(JSON.stringify(message));
+      return res.end();
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
