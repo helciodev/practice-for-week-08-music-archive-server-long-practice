@@ -210,6 +210,24 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    // Delete a specified album by albumId
+    if (req.method === "DELETE" && req.url.startsWith("/albums")) {
+      const urlSplit = req.url.split("/");
+      if (urlSplit.length === 3) {
+        const albumId = urlSplit[2];
+        const albumIndex = albums.indexOf(
+          (el) => el.albumId === Number(albumId)
+        );
+        albums.splice(albumIndex, 1);
+        const message = { message: "Deleted successfully" };
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(message));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
