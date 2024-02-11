@@ -1,10 +1,10 @@
-const http = require('http');
-const fs = require('fs');
+const http = require("http");
+const fs = require("fs");
 
 /* ============================ SERVER DATA ============================ */
-let artists = JSON.parse(fs.readFileSync('./seeds/artists.json'));
-let albums = JSON.parse(fs.readFileSync('./seeds/albums.json'));
-let songs = JSON.parse(fs.readFileSync('./seeds/songs.json'));
+let artists = JSON.parse(fs.readFileSync("./seeds/artists.json"));
+let albums = JSON.parse(fs.readFileSync("./seeds/albums.json"));
+let songs = JSON.parse(fs.readFileSync("./seeds/songs.json"));
 
 let nextArtistId = 2;
 let nextAlbumId = 2;
@@ -41,10 +41,11 @@ const server = http.createServer((req, res) => {
     reqBody += data;
   });
 
-  req.on("end", () => { // finished assembling the entire request body
+  req.on("end", () => {
+    // finished assembling the entire request body
     // Parsing the body of the request depending on the "Content-Type" header
     if (reqBody) {
-      switch (req.headers['content-type']) {
+      switch (req.headers["content-type"]) {
         case "application/json":
           req.body = JSON.parse(reqBody);
           break;
@@ -67,10 +68,14 @@ const server = http.createServer((req, res) => {
 
     /* ========================== ROUTE HANDLERS ========================== */
 
-    // Your code here
-
+    if (req.method === "GET" && req.url === "/artists") {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.write(JSON.stringify(artists));
+      return res.end();
+    }
     res.statusCode = 404;
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
     return res.end();
   });
@@ -78,4 +83,4 @@ const server = http.createServer((req, res) => {
 
 const port = 5000;
 
-server.listen(port, () => console.log('Server is listening on port', port));
+server.listen(port, () => console.log("Server is listening on port", port));
