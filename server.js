@@ -154,6 +154,42 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    // 7 Get a specific album's details based on albumId
+    if (req.method === "GET" && req.url.startsWith("/albums")) {
+      const urlSplit = req.url.split("/");
+      if (urlSplit.length === 3) {
+        const albumId = urlSplit[2];
+        const albumSongs = songs.filter((s) => s.albumId === Number(albumId));
+        const album = albums.find((el) => el.albumId === Number(albumId));
+        album.songs = albumSongs;
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(album));
+        return res.end();
+      }
+    }
+
+    //8 Add an album to a specific artist based on artistId
+    if (req.method === "POST" && req.url.startsWith("/artists")) {
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[3];
+      if (urlSplit.length === 4 && lastSplitted === "albums") {
+        const artistId = urlSplit[2];
+        const { name } = req.body;
+        const newAlbum = {
+          artistId: Number(artistId),
+          albumId: getNewAlbumId(),
+          name,
+        };
+        albums.push(newAlbum);
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 201;
+        res.write(JSON.stringify(newAlbum));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
