@@ -252,6 +252,24 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+    // 12 Get all songs of a specific album based on albumId
+    if (req.method === "GET" && req.url.startsWith("/albums")) {
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[3];
+      console.log(lastSplitted);
+      if (urlSplit.length === 4 && lastSplitted === "songs") {
+        const albumId = urlSplit[2];
+        console.log(albumId);
+        const albumSongs = songs.filter(
+          (song) => song.albumId === Number(albumId)
+        );
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(albumSongs));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
