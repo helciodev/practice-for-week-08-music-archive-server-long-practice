@@ -190,6 +190,26 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    //9 Edit a specified album by albumId
+    if (
+      req.method === "PATCH" ||
+      (req.method === "PUT" && req.url.startsWith("/albums"))
+    ) {
+      const urlSplit = req.url.split("/");
+      if (urlSplit.length === 3) {
+        const albumId = urlSplit[2];
+        const album = albums.find((el) => el.albumId === Number(albumId));
+        const { name } = req.body;
+        album.name = name;
+        album.updatedAt = new Date();
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(album));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
