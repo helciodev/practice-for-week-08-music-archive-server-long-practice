@@ -302,6 +302,30 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    // 15 Add a song to a specific album based on albumId
+    if (req.method === "POST" && req.url.startsWith("/albums")) {
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[3];
+      if (urlSplit.length === 4 && lastSplitted === "songs") {
+        const albumId = urlSplit[2];
+        const { name, lyrics, trackNumber } = req.body;
+        const newSong = {
+          name,
+          lyrics,
+          trackNumber,
+          songId: getNewSongId(),
+          albumId: Number(albumId),
+        };
+
+        songs.push(newSong);
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 201;
+        res.write(JSON.stringify(newSong));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
