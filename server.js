@@ -288,6 +288,20 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    // 14 Get a specific song's details based on songId
+    if (req.method === "GET" && req.url.startsWith("/songs")) {
+      const urlSplit = req.url.split("/");
+      if (urlSplit.length === 3) {
+        const songId = urlSplit[2];
+        const songRes = songs.find((song) => song.songId === Number(songId));
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(songRes));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
