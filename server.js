@@ -228,6 +228,30 @@ const server = http.createServer((req, res) => {
         return res.end();
       }
     }
+
+    // 11 Get all songs of a specific artist based on artistId
+
+    if (req.method === "GET" && req.url.startsWith("/artists")) {
+      const urlSplit = req.url.split("/");
+      const lastSplitted = urlSplit[3];
+      if (urlSplit.length === 4 && lastSplitted === "songs") {
+        const artistId = urlSplit[2];
+        const artistAlbumsIds = albums.map((el) =>
+          el.artistId === Number(artistId) ? el.albumId : ""
+        );
+        const artistsSongs = [];
+        songs.forEach((song) => {
+          if (artistAlbumsIds.includes(song.albumId)) {
+            artistsSongs.push(song);
+          }
+        });
+
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 200;
+        res.write(JSON.stringify(artistsSongs));
+        return res.end();
+      }
+    }
     res.statusCode = 404;
     res.setHeader("Content-Type", "application/json");
     res.write("Endpoint not found");
